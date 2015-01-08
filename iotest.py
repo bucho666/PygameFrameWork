@@ -39,7 +39,7 @@ if __name__ == '__main__':
     framework.GameRunner(IOTest())\
         .initialize_system()\
         .initialize_screen(640, 480, 16)\
-        .initialize_joypad(4)\
+        .initialize_controller(4, 'config.ini')\
         .set_fps(30)\
         .set_font('Courier New', 18)\
         .set_caption('IO Test')\

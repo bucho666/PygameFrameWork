@@ -2,6 +2,7 @@
 import sys
 import pygame
 from pygame.locals import *
+import configfile
 
 class GameRunner(object):
     DEFAULT_FONT_SIZE = 16
@@ -12,7 +13,7 @@ class GameRunner(object):
     def __init__(self, application):
         self._screen = None
         self._timer = Timer(self.DEFALUT_FPS)
-        self._joypad = []
+        self._controller = []
         self._keyboard = KeyBoard()
         self._application = application
 
@@ -32,10 +33,19 @@ class GameRunner(object):
         self._screen = Screen(screen, font)
         return self
 
-    def initialize_joypad(self, joypad_number):
+    def initialize_controller(self, joypad_number, keybind_filename):
         self._initialize_joysticks()
-        self._joypad = [JoyPadState() for n in range(joypad_number)]
+        config = configfile.ConfigFile(keybind_filename).load()
+        key_binds = [self._load_keybind(config, num) for num in range(joypad_number)]
+        self._controller = [Controller(key_bind) for key_bind in key_binds]
         return self
+
+    def _load_keybind(self, config, pad_num):
+        bind = dict()
+        section = '%dP' % (pad_num+1)
+        for (name, value) in config.items(section):
+            bind[value] = name
+        return bind
 
     def _initialize_joysticks(self):
         for js_no in range(pygame.joystick.get_count()):
@@ -73,18 +83,18 @@ class GameRunner(object):
     def poll_event(self, event):
         if event.type is QUIT: sys.exit()
         if event.type in [JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP]:
-            self._joypad[event.joy].append(event)
+            self._controller[event.joy].recive_event(event)
         elif event.type in [KEYDOWN, KEYUP]:
             self._keyboard.append(event)
 
     def update(self):
-        self._application.update(self._keyboard, self._joypad)
+        self._application.update(self._keyboard, self._controller)
         self.reset_input()
 
     def reset_input(self):
         self._keyboard.reset()
-        for joypad in self._joypad:
-            joypad.reset()
+        for controller in self._controller:
+            controller.reset_event()
 
     def draw(self):
         self._application.draw(self._screen)
@@ -119,7 +129,7 @@ class Screen(object):
     def update(self):
         pygame.display.update()
 
-class JoyPadState(object):
+class JoyPadEvent(object):
     def __init__(self):
         self._down_keys = []
         self._pressed_state = dict()
@@ -155,6 +165,38 @@ class JoyPadState(object):
     def reset(self):
         self._down_keys = []
 
+class Controller(object):
+    def __init__(self, keybind):
+        self._joypad_event = JoyPadEvent()
+        self._keybind = keybind
+
+    def recive_event(self, event):
+        self._joypad_event.append(event)
+
+    def reset_event(self):
+        self._joypad_event.reset()
+
+    def pressed_keys(self):
+        return self._bind_keys(self._joypad_event.pressed_keys())
+
+    def down_keys(self):
+        return self._bind_keys(self._joypad_event.down_keys())
+
+    def down_raw_keys(self):
+        return self._joypad_event.down_keys()
+
+    def pressed_raw_keys(self):
+        return self._joypad_event.pressed_keys()
+
+    def _bind_keys(self, keys):
+        bind_keys = []
+        for key in keys:
+            str_key = str(key)
+            if not self._keybind.has_key(str_key): continue
+            bind_keys.append(self._keybind[str_key])
+        return bind_keys
+
+
 class KeyBoard(object):
     def __init__(self):
         self._down_keys = []
@@ -179,7 +221,7 @@ class KeyBoard(object):
 if __name__ == '__main__':
     class HelloWorld(object):
         TEXT_COLOR = (192,192,0)
-        def update(self, keyboard, joypads):
+        def update(self, keyboard, controllers):
             pass
 
         def draw(self, screen):
@@ -189,7 +231,7 @@ if __name__ == '__main__':
     GameRunner(HelloWorld())\
         .initialize_system()\
         .initialize_screen(640, 480, 16)\
-        .initialize_joypad(4)\
+        .initialize_controller(4, 'config.ini')\
         .set_fps(30)\
         .set_font('Courier New', 18)\
         .set_caption('Hello World')\
