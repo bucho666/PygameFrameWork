@@ -34,7 +34,7 @@ class GameRunner(object):
 
     def initialize_joypad(self, joypad_number):
         self._initialize_joysticks()
-        self._joypad = [JoyPad() for n in range(joypad_number)]
+        self._joypad = [JoyPadState() for n in range(joypad_number)]
         return self
 
     def _initialize_joysticks(self):
@@ -119,7 +119,7 @@ class Screen(object):
     def update(self):
         pygame.display.update()
 
-class JoyPad(object):
+class JoyPadState(object):
     def __init__(self):
         self._down_keys = []
         self._pressed_state = dict()
@@ -141,7 +141,7 @@ class JoyPad(object):
         button = 'BUTTON:%d' % event.button
         if event.type is JOYBUTTONDOWN:
             self._pressed_state[button] = 1
-            self._down_keys.append(button)
+            self._down_keys.append((button, 1))
         elif event.type is JOYBUTTONUP:
             self._pressed_state[button] = 0
     
@@ -192,6 +192,6 @@ if __name__ == '__main__':
         .initialize_joypad(4)\
         .set_fps(30)\
         .set_font('Courier New', 18)\
-        .set_caption('IO Test')\
+        .set_caption('Hello World')\
         .run()
 
