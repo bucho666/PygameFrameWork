@@ -3,7 +3,13 @@ import configfile
 
 class KeyConfig(object):
     def __init__(self, controller_num):
-        self._player_status = [PlayerState(num) for num in range(controller_num)]
+        config = configfile.ConfigFile('config.ini').load()
+        self._load_key_list(config)
+        self._player_status = [PlayerState(num, config) for num in range(controller_num)]
+
+    def _load_key_list(self, config):
+        [(key, key_list)] = config.items('Keys')
+        PlayerState.set_keys(key_list.split())
 
     def update(self, keyboard, controllers):
         for status, controller in zip(self._player_status, controllers):
@@ -15,25 +21,28 @@ class KeyConfig(object):
             player_state.draw(screen)
 
 class PlayerState(object):
-    KEYS = [ 'UP', 'DOWN', 'LEFT', 'RIGHT', 'HOLD' ]
-    def __init__(self, controller_num):
+    keys = []
+    def __init__(self, controller_num, config):
         self._controller_num = controller_num
-        self._current = 0
-        config = configfile.ConfigFile('config.ini')
+        self._current_state = 0
         self._status = \
-            [Ready(self, controller_num)] +\
-            [KeyBinder(self, controller_num, key, config) for key in self.KEYS] +\
-            [Done(controller_num)]
+            [Ready(self, self._controller_num)] + \
+            [KeyBinder(self, self._controller_num, key, config) for key in self.keys] + \
+            [Done(self._controller_num)]
+
+    @classmethod
+    def set_keys(cls, key_list):
+        cls.keys = key_list
 
     def update(self, controller):
-        self._status[self._current].update(controller)
+        self._status[self._current_state].update(controller)
 
     def draw(self, screen):
-        self._status[self._current].draw(screen)
+        self._status[self._current_state].draw(screen)
 
     def next(self):
-        if self._current + 1 >= len(self._status): return
-        self._current += 1
+        if self._current_state + 1 >= len(self._status): return
+        self._current_state += 1
 
 class State(object):
     TEXT_COLOR = (192,192,192)
