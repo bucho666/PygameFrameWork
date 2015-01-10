@@ -124,6 +124,9 @@ class Screen(object):
 
     def write(self, pos, string, color):
         surface = self._font.render(string, True, color)
+        self.draw(pos, surface)
+
+    def draw(self, pos, surface):
         self._screen.blit(surface, pos)
 
     def update(self):
