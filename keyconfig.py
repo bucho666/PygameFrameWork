@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import configfile
+from color import Color
 
 class KeyConfig(object):
     def __init__(self, controller_num):
@@ -45,7 +46,7 @@ class PlayerState(object):
         self._current_state += 1
 
 class State(object):
-    TEXT_COLOR = (192,192,192)
+    TEXT_COLOR = Color.SILVER
     def __init__(self, controller_num):
         self._controller_num = controller_num
      
@@ -76,7 +77,7 @@ class KeyBinder(State):
         self.write(screen, self._target_key)
 
 class Ready(State):
-    TEXT_COLOR = (255,255,0)
+    TEXT_COLOR = Color.YELLOW
     def __init__(self, state, controller_num):
         State.__init__(self, controller_num)
         self._state = state
@@ -89,7 +90,7 @@ class Ready(State):
         self.write(screen, 'Push eny key')
 
 class Done(State):
-    TEXT_COLOR = (0,255,0)
+    TEXT_COLOR = Color.LIME
     def update(self, controller):
         pass
     

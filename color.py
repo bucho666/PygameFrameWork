@@ -15,9 +15,11 @@ class Color(object):
     WHITE = (255,255,255)
     FUCHSIA = (255,0,255)
     AQUA = (0,255,255)
+    YELLOW = (255,255,0)
 
     LIST = (BLACK, MAROON, GREEN,
             NAVY, GRAY, PURPLE,
             OLIVE, TEAL, SILVER,
             RED, LIME, BLUE,
-            WHITE, FUCHSIA, AQUA)
+            WHITE, FUCHSIA, AQUA,
+            YELLOW)

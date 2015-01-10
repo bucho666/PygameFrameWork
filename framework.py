@@ -221,14 +221,14 @@ class KeyBoard(object):
         return self._pressed_keys
 
 if __name__ == '__main__':
+    from color import Color
     class HelloWorld(object):
-        TEXT_COLOR = (192,192,0)
         def update(self, keyboard, controllers):
             pass
 
         def draw(self, screen):
             screen.fill()
-            screen.write((0, 0), 'Hello World', self.TEXT_COLOR)
+            screen.write((0, 0), 'Hello World', Color.SILVER)
 
     GameRunner(HelloWorld())\
         .initialize_system()\
