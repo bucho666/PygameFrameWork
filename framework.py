@@ -31,6 +31,7 @@ class GameRunner(object):
         default_font = pygame.font.get_default_font()
         font = pygame.font.Font(default_font, self.DEFAULT_FONT_SIZE)
         self._screen = Screen(screen, font)
+        self._application.set_screen(self._screen)
         return self
 
     def initialize_controller(self, joypad_number, keybind_filename):
@@ -38,6 +39,7 @@ class GameRunner(object):
         config = configfile.ConfigFile(keybind_filename).load()
         key_binds = [self._load_keybind(config, num) for num in range(joypad_number)]
         self._controller = [Controller(key_bind) for key_bind in key_binds]
+        self._application.set_controllers(self._controller)
         return self
 
     def _load_keybind(self, config, pad_num):
@@ -88,7 +90,7 @@ class GameRunner(object):
             self._keyboard.append(event)
 
     def update(self):
-        self._application.update(self._keyboard, self._controller)
+        self._application.update()
         self.reset_input()
 
     def reset_input(self):
@@ -97,7 +99,7 @@ class GameRunner(object):
             controller.reset_event()
 
     def draw(self):
-        self._application.draw(self._screen)
+        self._application.draw()
         self._screen.update()
 
 class Timer(object):
@@ -220,15 +222,36 @@ class KeyBoard(object):
     def pressed_keys(self):
         return self._pressed_keys
 
+class Application(object):
+    def __init__(self):
+        self._screen = None
+        self._controllers = []
+        self._keyboard = None
+
+    def set_screen(self, screen):
+        self._screen = screen
+
+    def set_controllers(self, controllers):
+        self._controllers = controllers
+    
+    def set_keyboard(self, keyboard):
+        self._keyboard = keyboard
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
+
 if __name__ == '__main__':
     from color import Color
-    class HelloWorld(object):
-        def update(self, keyboard, controllers):
-            pass
+    class HelloWorld(Application):
+        def __init__(self):
+            Application.__init__(self)
 
-        def draw(self, screen):
-            screen.fill()
-            screen.write((0, 0), 'Hello World', Color.SILVER)
+        def draw(self):
+            self._screen.fill()
+            self._screen.write((0, 0), 'Hello World', Color.SILVER)
 
     GameRunner(HelloWorld())\
         .initialize_system()\

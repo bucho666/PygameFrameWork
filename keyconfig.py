@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import configfile
 from color import Color
+import framework
+from framework import Application
 
-class KeyConfig(object):
+class KeyConfig(Application):
     def __init__(self, controller_num):
+        Application.__init__(self)
         config = configfile.ConfigFile('config.ini').load()
         self._load_key_list(config)
         self._player_status = [PlayerState(num, config) for num in range(controller_num)]
@@ -12,14 +15,14 @@ class KeyConfig(object):
         [(key, key_list)] = config.items('Keys')
         PlayerState.set_keys(key_list.split())
 
-    def update(self, keyboard, controllers):
-        for status, controller in zip(self._player_status, controllers):
+    def update(self):
+        for status, controller in zip(self._player_status, self._controllers):
             status.update(controller)
 
-    def draw(self, screen):
-        screen.fill()
+    def draw(self):
+        self._screen.fill()
         for player_state in self._player_status:
-            player_state.draw(screen)
+            player_state.draw(self._screen)
 
 class PlayerState(object):
     keys = []
@@ -98,7 +101,6 @@ class Done(State):
         self.write(screen, 'Done')
 
 if __name__ == '__main__':
-    import framework
     CONTROLLER_NUM = 4
     framework.GameRunner(KeyConfig(CONTROLLER_NUM))\
         .initialize_system()\
