@@ -23,6 +23,7 @@ class AsciiTileSheet(object):
         for y, color in enumerate(Color.LIST):
            for x, ch in enumerate(characters):
                 self._surface[(ch, color)] = tilesheet.get_tile((x, y))
+        return self
 
     def create_tilesheet(self, font, characters):
         w, h = self.get_size(font)
