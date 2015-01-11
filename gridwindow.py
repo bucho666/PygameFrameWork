@@ -17,7 +17,7 @@ class GridWindow(object):
         return (px + x * w, py + y * h)
 
 if __name__ == '__main__':
-    class GridWindowDemo(framework.Application):
+    class GridWindowDemo(framework.Game):
         POSITION = (0, 0)
         GRID_SIZE = (10, 18)
         LEFT  = (-1, 0)
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         UP    = (0, -1)
         RIGHT = (1,  0)
         def __init__(self):
-            framework.Application.__init__(self)
+            framework.Game.__init__(self)
             self._window = None
             self._character_pos = (1, 1)
 
@@ -56,5 +56,5 @@ if __name__ == '__main__':
         .initialize_screen(640, 480, 16)\
         .set_fps(30)\
         .set_font('Courier New', 18)\
-        .set_caption('KeyConfig')\
+        .set_caption('GridWindowDemo')\
         .run()

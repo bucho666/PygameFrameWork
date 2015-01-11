@@ -2,11 +2,11 @@
 import configfile
 from color import Color
 import framework
-from framework import Application
+from framework import Game
 
-class KeyConfig(Application):
+class KeyConfig(Game):
     def __init__(self, controller_num):
-        Application.__init__(self)
+        Game.__init__(self)
         config = configfile.ConfigFile('config.ini').load()
         self._load_key_list(config)
         self._player_status = [PlayerState(num, config) for num in range(controller_num)]

@@ -42,14 +42,14 @@ class AsciiTileSheet(object):
         
 if __name__ == '__main__':
     import random
-    from framework import Application
-    class AsciiTileSheetDemo(Application):
+    from framework import Game
+    class AsciiTileSheetDemo(Game):
         def __init__(self):
-            Application.__init__(self)
+            Game.__init__(self)
             self._tile = AsciiTileSheet()
 
-        def initialize(self, fontname, size):
-            self._tile.initialize(fontname, size)
+        def initialize(self):
+            self._tile.initialize('Courier New', 18)
 
         def draw(self):
             self._screen.fill()
@@ -67,5 +67,4 @@ if __name__ == '__main__':
         .initialize_screen(640, 480, 16)\
         .set_fps(24)\
         .set_caption('Ascii Tile Demo')
-    demo.initialize('Courier New', 18)
     runner.run()

@@ -10,13 +10,13 @@ class GameRunner(object):
     ALLOW_EVENTS = [QUIT, KEYDOWN, KEYUP, 
                 JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP]
 
-    def __init__(self, application):
+    def __init__(self, game):
         self._screen = None
         self._timer = Timer(self.DEFALUT_FPS)
         self._controller = []
         self._keyboard = KeyBoard()
-        self._application = application
-        self._application.set_keyboard(self._keyboard)
+        self._game = game
+        self._game.set_keyboard(self._keyboard)
 
     def initialize_system(self):
         pygame.init()
@@ -32,7 +32,7 @@ class GameRunner(object):
         default_font = pygame.font.get_default_font()
         font = pygame.font.Font(default_font, self.DEFAULT_FONT_SIZE)
         self._screen = Screen(screen, font)
-        self._application.set_screen(self._screen)
+        self._game.set_screen(self._screen)
         return self
 
     def initialize_controller(self, joypad_number, keybind_filename):
@@ -40,7 +40,7 @@ class GameRunner(object):
         config = configfile.ConfigFile(keybind_filename).load()
         key_binds = [self._load_keybind(config, num) for num in range(joypad_number)]
         self._controller = [Controller(key_bind) for key_bind in key_binds]
-        self._application.set_controllers(self._controller)
+        self._game.set_controllers(self._controller)
         return self
 
     def _load_keybind(self, config, pad_num):
@@ -67,6 +67,7 @@ class GameRunner(object):
         return self
 
     def run(self):
+        self._game.initialize()
         while True:
             self.process()
             self.wait()
@@ -91,7 +92,7 @@ class GameRunner(object):
             self._keyboard.append(event)
 
     def update(self):
-        self._application.update()
+        self._game.update()
         self.reset_input()
 
     def reset_input(self):
@@ -100,7 +101,7 @@ class GameRunner(object):
             controller.reset_event()
 
     def draw(self):
-        self._application.draw()
+        self._game.draw()
         self._screen.update()
 
 class Timer(object):
@@ -223,7 +224,7 @@ class KeyBoard(object):
     def pressed_keys(self):
         return self._pressed_keys
 
-class Application(object):
+class Game(object):
     def __init__(self):
         self._screen = None
         self._controllers = []
@@ -238,6 +239,9 @@ class Application(object):
     def set_keyboard(self, keyboard):
         self._keyboard = keyboard
 
+    def initialize(self):
+        pass
+
     def update(self):
         pass
 
@@ -246,9 +250,9 @@ class Application(object):
 
 if __name__ == '__main__':
     from color import Color
-    class HelloWorld(Application):
+    class HelloWorld(Game):
         def __init__(self):
-            Application.__init__(self)
+            Game.__init__(self)
 
         def draw(self):
             self._screen.fill()
