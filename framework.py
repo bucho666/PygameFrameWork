@@ -16,6 +16,7 @@ class GameRunner(object):
         self._controller = []
         self._keyboard = KeyBoard()
         self._application = application
+        self._application.set_keyboard(self._keyboard)
 
     def initialize_system(self):
         pygame.init()
