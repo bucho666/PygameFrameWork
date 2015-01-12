@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import framework
 from color import Color
+from coordinate import Coordinate
 import sys
 
 class GridWindow(object):
@@ -16,21 +17,20 @@ class GridWindow(object):
         self._screen.draw(self._convert_pos(pos), surface)
 
     def _convert_pos(self, pos):
-        (px, py), (x, y), (w, h) = self._position, pos, self._grid_size
-        return (px + x * w, py + y * h)
+        return (self._position + pos * self._grid_size).xy()
 
 if __name__ == '__main__':
     class GridWindowDemo(framework.Game):
-        POSITION = (0, 0)
-        GRID_SIZE = (10, 18)
-        LEFT  = (-1, 0)
-        DOWN  = ( 0, 1)
-        UP    = (0, -1)
-        RIGHT = (1,  0)
+        POSITION = Coordinate(0, 0)
+        GRID_SIZE = Coordinate(10, 18)
+        LEFT  = Coordinate(-1, 0)
+        DOWN  = Coordinate(0, 1)
+        UP    = Coordinate(0, -1)
+        RIGHT = Coordinate(1,  0)
         def __init__(self):
             framework.Game.__init__(self)
             self._window = None
-            self._character_pos = (1, 1)
+            self._character_pos = Coordinate(1, 1)
 
         def update(self):
             down_keys =  self._keyboard.down_keys()
@@ -43,8 +43,7 @@ if __name__ == '__main__':
             if key == ord('q'): sys.exit()
 
         def _move(self, direction):
-            (x, y), (dx, dy) = self._character_pos, direction
-            self._character_pos = (x+dx, y+dy)
+            self._character_pos += direction
 
         def set_screen(self, screen):
             self._screen = screen
