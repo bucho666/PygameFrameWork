@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import sys
 import framework
 from color import Color
 from coordinate import Coordinate
-import sys
+from coordinate import Direction
 
 class GridWindow(object):
     def __init__(self, screen, position, grid_size):
@@ -23,10 +24,6 @@ if __name__ == '__main__':
     class GridWindowDemo(framework.Game):
         POSITION = Coordinate(0, 0)
         GRID_SIZE = Coordinate(10, 18)
-        LEFT  = Coordinate(-1, 0)
-        DOWN  = Coordinate(0, 1)
-        UP    = Coordinate(0, -1)
-        RIGHT = Coordinate(1,  0)
         def __init__(self):
             framework.Game.__init__(self)
             self._window = None
@@ -36,10 +33,10 @@ if __name__ == '__main__':
             down_keys =  self._keyboard.down_keys()
             if not down_keys: return
             key = down_keys[0]
-            if key == ord('h'): self._move(self.LEFT)
-            if key == ord('j'): self._move(self.DOWN)
-            if key == ord('k'): self._move(self.UP)
-            if key == ord('l'): self._move(self.RIGHT)
+            if key == ord('h'): self._move(Direction.LEFT)
+            if key == ord('j'): self._move(Direction.DOWN)
+            if key == ord('k'): self._move(Direction.UP)
+            if key == ord('l'): self._move(Direction.RIGHT)
             if key == ord('q'): sys.exit()
 
         def _move(self, direction):

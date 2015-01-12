@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 class Coordinate(object):
     def __init__(self, x, y):
         self._x, self._y = x, y
@@ -26,6 +27,12 @@ class Coordinate(object):
 
     def copy(self):
         return Coordinate(self._x, self._y)
+
+class Direction(object):
+    LEFT  = Coordinate(-1, 0)
+    DOWN  = Coordinate(0, 1)
+    UP    = Coordinate(0, -1)
+    RIGHT = Coordinate(1,  0)
 
 if __name__ == '__main__':
     import unittest
