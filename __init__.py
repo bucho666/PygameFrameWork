@@ -5,3 +5,4 @@ from tilesheet import AsciiTileSheet
 from coordinate import Coordinate
 from coordinate import Direction
 from color import Color
+from sprite import Sprite
