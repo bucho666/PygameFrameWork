@@ -78,7 +78,7 @@ class GameRunner(object):
     def process(self):
         self.poll_events()
         self.update()
-        self.draw()
+        self.render()
 
     def poll_events(self):
         for event in pygame.event.get():
@@ -100,8 +100,8 @@ class GameRunner(object):
         for controller in self._controller:
             controller.reset_event()
 
-    def draw(self):
-        self._game.draw()
+    def render(self):
+        self._game.render()
         self._screen.update()
 
 class Timer(object):
@@ -245,7 +245,7 @@ class Game(object):
     def update(self):
         pass
 
-    def draw(self):
+    def render(self):
         pass
 
 if __name__ == '__main__':
@@ -254,7 +254,7 @@ if __name__ == '__main__':
         def __init__(self):
             Game.__init__(self)
 
-        def draw(self):
+        def render(self):
             self._screen.fill()
             self._screen.write((0, 0), 'Hello World', Color.SILVER)
 

@@ -51,7 +51,7 @@ if __name__ == '__main__':
         def initialize(self):
             self._tile.initialize('Courier New', 18)
 
-        def draw(self):
+        def render(self):
             self._screen.fill()
             chars = [chr(n) for n in range(32, 127)]
             for y in range(24):

@@ -46,7 +46,7 @@ if __name__ == '__main__':
             self._screen = screen
             self._window = GridWindow(screen, self.POSITION, self.GRID_SIZE)
 
-        def draw(self):
+        def render(self):
             self._screen.fill()
             self._window.write(self._character_pos, '@', Color.LIME)
 
