@@ -198,11 +198,11 @@ class Controller(object):
         return self._joypad_event.pressed_keys()
 
     def _bind_keys(self, keys):
-        bind_keys = []
+        bind_keys = set()
         for key in keys:
             str_key = str(key)
             if not self._keybind.has_key(str_key): continue
-            bind_keys.append(self._keybind[str_key])
+            bind_keys.add(self._keybind[str_key])
         return bind_keys
 
 class KeyBoard(object):
