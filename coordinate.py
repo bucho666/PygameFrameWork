@@ -33,6 +33,10 @@ class Direction(object):
     DOWN  = Coordinate(0, 1)
     UP    = Coordinate(0, -1)
     RIGHT = Coordinate(1,  0)
+    UPPER_LEFT  = UP + LEFT
+    UPPER_RIGHT = UP + RIGHT
+    LOWER_LEFT  = DOWN + LEFT
+    LOWER_RIGHT = DOWN + RIGHT
 
 if __name__ == '__main__':
     import unittest
