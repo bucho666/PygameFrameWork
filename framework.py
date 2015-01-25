@@ -28,6 +28,11 @@ class GameRunner(object):
         pygame.event.set_allowed(None)
         pygame.event.set_allowed(self.ALLOW_EVENTS)
 
+    def initialize_fullscreen(self, width, height, depth):
+        self.initialize_screen(width, height, depth, FULLSCREEN)
+        pygame.mouse.set_visible(False)
+        return self
+
     def initialize_screen(self, width, height, depth, screen_flag=0):
         screen = pygame.display.set_mode((width, height), screen_flag, depth)
         default_font = pygame.font.get_default_font()
@@ -221,10 +226,10 @@ class KeyBoard(object):
             self._pressed_keys.remove(event.key)
 
     def down_keys(self):
-        return list(self._down_keys)
+        return set(self._down_keys)
 
     def pressed_keys(self):
-        return self._pressed_keys
+        return set(self._pressed_keys)
 
 class Game(object):
     def __init__(self):
@@ -260,9 +265,13 @@ if __name__ == '__main__':
             self._screen.fill()
             self._screen.write((0, 0), 'Hello World', Color.SILVER)
 
+        def update(self):
+            down_keys =  self._keyboard.pressed_keys()
+            if K_ESCAPE in down_keys: sys.exit()
+
     GameRunner(HelloWorld())\
         .initialize_system()\
-        .initialize_screen(640, 480, 16)\
+        .initialize_fullscreen(640, 480, 16)\
         .initialize_controller(4, 'config.ini')\
         .set_fps(30)\
         .set_font('Courier New', 18)\
