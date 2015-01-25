@@ -1,20 +1,53 @@
 # -*- coding: utf-8 -*-
 import pygame
 
-class Schedule(object):
+class Scheduler(object):
     _schedules = []
     @classmethod
     def tick(cls):
-        for schedule in cls._schedules:
+        for schedule in list(cls._schedules):
+            cls._execute_schedule(schedule)
+
+    @classmethod
+    def _execute_schedule(cls, schedule):
+        if schedule.is_running():
             schedule.execute()
+            return
+        schedule.execute_last_action()
+        cls._schedules.remove(schedule)
 
     @classmethod
     def add(cls, schedule):
         cls._schedules.append(schedule)
 
-    @classmethod
-    def remove(cls, schedule):
-        cls._schedules.remove(schedule)
+class Schedule(object):
+    def __init__(self, frame):
+        self._frame = frame
+        self._action = self.NullAction()
+        self._last_action = self.NullAction()
+        Scheduler.add(self)
+
+    def last(self, action):
+        self._last_action = action
+        return self
+
+    def action(self, action):
+        self._action = action
+        return self
+
+    def execute(self):
+        self._action()
+        self._frame -= 1
+
+    def execute_last_action(self):
+        self._last_action()
+
+    def is_running(self):
+        return self._frame > 0
+
+    class NullAction(object):
+        def __call__(self):
+            pass
 
 class Job(object):
     def __init__(self, wait_frame):
@@ -23,7 +56,7 @@ class Job(object):
 
     def execute(self):
         if self.is_ready(): return
-        self.job()
+        self.action()
         self.done()
 
     def is_ready(self):
@@ -33,7 +66,7 @@ class Job(object):
     def done(self):
         Schedule.remove(self)
 
-    def job(self):
+    def action(self):
         pass
 
 class RepeatJob(Job):
@@ -62,40 +95,28 @@ class RepeatJob(Job):
 if __name__ == '__main__':
     import sys
     import time
-    class WillHello(Job):
-        def __init__(self, time):
-            Job.__init__(self, time)
 
-        def job(self):
-            print 'execute WillHello'
+    class TestJob(object):
+        def first(self):
+            print 'first'
+            return self
 
-    class WillQuit(Job):
-        def __init__(self, time):
-            Job.__init__(self, time)
+        def action(self):
+            print 'action'
 
-        def job(self):
-            sys.exit()
-
-    class CounterJob(RepeatJob):
-        def __init__(self, time, number=0):
-            RepeatJob.__init__(self, time, number)
-            self._count = 0
-
-        def job(self):
-            self._count += self._interval
-            print self._count
+        def last(self):
+            print 'last'
+            sys.exit(0)
 
     class Test(object):
         def __init__(self):
             pygame.init()
-            WillHello(20)
-            WillQuit(30)
-            CounterJob(1, 3)
-            CounterJob(5)
+            j = TestJob().first()
+            Schedule(4).action(j.action).last(j.last)
 
         def execute(self):
             while True:
-                Schedule.tick()
+                Scheduler.tick()
                 time.sleep(0.1) 
 
     Test().execute()

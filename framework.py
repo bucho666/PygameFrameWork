@@ -3,7 +3,7 @@ import sys
 import pygame
 from pygame.locals import *
 import configfile
-from scheduler import Schedule
+from scheduler import Scheduler
 
 class GameRunner(object):
     DEFAULT_FONT_SIZE = 16
@@ -98,7 +98,7 @@ class GameRunner(object):
             self._keyboard.append(event)
 
     def update(self):
-        Schedule.tick()
+        Scheduler.tick()
         self._game.update()
         self.reset_input()
 
