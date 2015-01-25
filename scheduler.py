@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
 import pygame
 
-class Time(object):
-    MILLI = 1000.0
-    @classmethod
-    def now(cls):
-        return pygame.time.get_ticks() / cls.MILLI
-
 class Schedule(object):
     _schedules = []
     @classmethod
     def tick(cls):
-        now = Time.now()
         for schedule in cls._schedules:
-            schedule.execute(now)
+            schedule.execute()
 
     @classmethod
     def add(cls, schedule):
@@ -24,19 +17,20 @@ class Schedule(object):
         cls._schedules.remove(schedule)
 
 class Job(object):
-    def __init__(self, time):
-        self._time = Time.now() + time
+    def __init__(self, wait_frame):
+        self._wait_frame = wait_frame
         Schedule.add(self)
 
-    def execute(self, now):
-        if self.is_ready(now): return
+    def execute(self):
+        if self.is_ready(): return
         self.job()
-        self.done(now)
+        self.done()
 
-    def is_ready(self, now):
-        return self._time > now
+    def is_ready(self):
+        self._wait_frame -= 1
+        return self._wait_frame > 0
 
-    def done(self, now):
+    def done(self):
         Schedule.remove(self)
 
     def job(self):
@@ -49,10 +43,10 @@ class RepeatJob(Job):
         self._repeat_max = repeat_max
         self._repeat_count = 0
 
-    def done(self, now):
+    def done(self):
         self._count_up()
-        if self._is_done(): Job.done(self, now)
-        else: self._repeat(now)
+        if self._is_done(): Job.done(self)
+        else: self._repeat()
 
     def _count_up(self):
         if self._repeat_max:
@@ -62,8 +56,8 @@ class RepeatJob(Job):
         return self._repeat_max and\
             self._repeat_count == self._repeat_max
 
-    def _repeat(self, now):
-        self._time = now + self._interval
+    def _repeat(self):
+        self._wait_frame = + self._interval
 
 if __name__ == '__main__':
     import sys
@@ -94,10 +88,10 @@ if __name__ == '__main__':
     class Test(object):
         def __init__(self):
             pygame.init()
-            WillHello(2)
-            WillQuit(3)
-            CounterJob(0.1, 3)
-            CounterJob(0.5)
+            WillHello(20)
+            WillQuit(30)
+            CounterJob(1, 3)
+            CounterJob(5)
 
         def execute(self):
             while True:
