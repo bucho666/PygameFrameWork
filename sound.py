@@ -12,6 +12,11 @@ class Sound(object):
         cls._cache[sound_file].play()
 
     @classmethod
+    def play_bgm(cls, music_file):
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play(-1)
+
+    @classmethod
     def load(cls, sound_file):
         sound = pygame.mixer.Sound(sound_file)
         sound.set_volume(1.0)
