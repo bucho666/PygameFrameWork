@@ -9,3 +9,4 @@ from color import Color
 from sprite import Sprite
 from scheduler import Schedule
 from key import Key
+from sound import Sound
