@@ -38,7 +38,7 @@ class GameRunner(object):
         default_font = pygame.font.get_default_font()
         font = pygame.font.Font(default_font, self.DEFAULT_FONT_SIZE)
         self._screen = Screen(screen, font)
-        self._game.set_screen(self._screen)
+        # self._game.set_screen(self._screen)
         return self
 
     def initialize_controller(self, joypad_number, keybind_filename):
@@ -73,7 +73,7 @@ class GameRunner(object):
         return self
 
     def run(self):
-        self._game.initialize()
+        self._game.initialize(self._screen)
         while True:
             self.process()
             self.wait()
@@ -237,17 +237,14 @@ class Game(object):
         self._controllers = []
         self._keyboard = None
 
-    def set_screen(self, screen):
-        self._screen = screen
-
     def set_controllers(self, controllers):
         self._controllers = controllers
     
     def set_keyboard(self, keyboard):
         self._keyboard = keyboard
 
-    def initialize(self):
-        pass
+    def initialize(self, screen):
+        self._screen = screen
 
     def update(self):
         pass
@@ -271,7 +268,7 @@ if __name__ == '__main__':
 
     GameRunner(HelloWorld())\
         .initialize_system()\
-        .initialize_fullscreen(640, 480, 16)\
+        .initialize_screen(640, 480, 16)\
         .initialize_controller(4, 'config.ini')\
         .set_fps(30)\
         .set_font('Courier New', 18)\

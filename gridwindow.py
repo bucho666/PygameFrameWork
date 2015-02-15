@@ -11,7 +11,10 @@ class GridWindow(object):
         self._grid_size = grid_size
         self._screen = screen
 
-    def write(self, pos, string, color):
+    def fill(self, color=(0,0,0)):
+        self._screen.fill(color)
+
+    def write(self, string, pos, color):
         self._screen.write(self._convert_pos(pos), string, color)
 
     def draw(self, pos, surface):

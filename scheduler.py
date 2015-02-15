@@ -20,6 +20,12 @@ class Scheduler(object):
     def add(cls, schedule):
         cls._schedules.append(schedule)
 
+    @classmethod
+    def clear(cls):
+        for schedule in list(cls._schedules):
+            schedule.execute_last_action()
+        cls._schedules = []
+
 class Schedule(object):
     def __init__(self, frame):
         self._frame = frame
